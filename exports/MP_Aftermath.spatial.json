@@ -1,0 +1,373 @@
+{
+    "Portal_Dynamic": [
+        {
+            "name": "CombatArea",
+            "CombatVolume": "CombatArea/CollisionPolygon3D",
+            "type": "CombatArea",
+            "right": {
+                "x": 1,
+                "y": 0,
+                "z": 0
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+            },
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "id": "CombatArea",
+            "linked": [
+                "CombatVolume"
+            ]
+        },
+        {
+            "name": "CollisionPolygon3D",
+            "type": "PolygonVolume",
+            "id": "CombatArea/CollisionPolygon3D",
+            "height": 100,
+            "points": [
+                {
+                    "x": -713.26,
+                    "y": 90.862,
+                    "z": -256.47374
+                },
+                {
+                    "x": -798.287,
+                    "y": 90.862,
+                    "z": -293.74574
+                },
+                {
+                    "x": -908.831,
+                    "y": 90.862,
+                    "z": -244.35874
+                },
+                {
+                    "x": -907.929,
+                    "y": 90.862,
+                    "z": 7.0272
+                },
+                {
+                    "x": -908.753,
+                    "y": 90.862,
+                    "z": 140.87026
+                },
+                {
+                    "x": -612.2164,
+                    "y": 90.862,
+                    "z": 140.27226
+                },
+                {
+                    "x": -561.9489,
+                    "y": 90.862,
+                    "z": 86.94226
+                },
+                {
+                    "x": -539.358,
+                    "y": 90.862,
+                    "z": 67.59196
+                },
+                {
+                    "x": -502.0898,
+                    "y": 90.862,
+                    "z": 66.52856
+                },
+                {
+                    "x": -482.938,
+                    "y": 90.862,
+                    "z": 44.67876
+                },
+                {
+                    "x": -506.2548,
+                    "y": 90.862,
+                    "z": 0.05175
+                },
+                {
+                    "x": -512.8637,
+                    "y": 90.862,
+                    "z": -10.73824
+                },
+                {
+                    "x": -512.9986,
+                    "y": 90.862,
+                    "z": -52.14494
+                },
+                {
+                    "x": -512.5321,
+                    "y": 90.862,
+                    "z": -143.44374
+                },
+                {
+                    "x": -595.51997,
+                    "y": 90.862,
+                    "z": -185.08274
+                },
+                {
+                    "x": -610.37043,
+                    "y": 90.862,
+                    "z": -205.17474
+                }
+            ]
+        },
+        {
+            "name": "PlayerSpawner0",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": 1,
+                "y": 0,
+                "z": 0
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+            },
+            "position": {
+                "x": -656.055,
+                "y": 53.875,
+                "z": -99.7769
+            },
+            "id": "PlayerSpawner0"
+        },
+        {
+            "name": "PlayerSpawner1",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": -0.997748,
+                "y": 0,
+                "z": -0.0670751
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0.0670751,
+                "y": 0,
+                "z": -0.997748
+            },
+            "position": {
+                "x": -676.65,
+                "y": 53.8885,
+                "z": 132.465
+            },
+            "id": "PlayerSpawner1"
+        },
+        {
+            "name": "PlayerSpawner2",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": -0.600127,
+                "y": 0,
+                "z": 0.799905
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": -0.799905,
+                "y": 0,
+                "z": -0.600127
+            },
+            "position": {
+                "x": -578.143,
+                "y": 64.456,
+                "z": 22.3533
+            },
+            "id": "PlayerSpawner2"
+        },
+        {
+            "name": "PlayerSpawner3",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": -0.879466,
+                "y": 0,
+                "z": -0.475962
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0.475962,
+                "y": 0,
+                "z": -0.879466
+            },
+            "position": {
+                "x": -631.366,
+                "y": 58.7366,
+                "z": -24.5395
+            },
+            "id": "PlayerSpawner3"
+        },
+        {
+            "name": "PlayerSpawner4",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": 0.417708,
+                "y": 0,
+                "z": -0.908581
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0.908581,
+                "y": 0,
+                "z": 0.417708
+            },
+            "position": {
+                "x": -632.757,
+                "y": 53.6151,
+                "z": -176.564
+            },
+            "id": "PlayerSpawner4"
+        },
+        {
+            "name": "PlayerSpawner5",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": 0.692848,
+                "y": 0,
+                "z": 0.721083
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": -0.721083,
+                "y": 0,
+                "z": 0.692848
+            },
+            "position": {
+                "x": -526.316,
+                "y": 53.8765,
+                "z": -100.732
+            },
+            "id": "PlayerSpawner5"
+        },
+        {
+            "name": "PlayerSpawner6",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": -0.822839,
+                "y": 0,
+                "z": -0.568275
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0.568275,
+                "y": 0,
+                "z": -0.822839
+            },
+            "position": {
+                "x": -557.302,
+                "y": 63.2174,
+                "z": -25.5449
+            },
+            "id": "PlayerSpawner6"
+        },
+        {
+            "name": "PlayerSpawner7",
+            "type": "PlayerSpawner",
+            "right": {
+                "x": -0.1564,
+                "y": 0,
+                "z": -0.987694
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0.987694,
+                "y": 0,
+                "z": -0.1564
+            },
+            "position": {
+                "x": -699.633,
+                "y": 52.7107,
+                "z": -16.0031
+            },
+            "id": "PlayerSpawner7"
+        }
+    ],
+    "Static": [
+        {
+            "name": "MP_Aftermath_Terrain",
+            "type": "MP_Aftermath_Terrain",
+            "right": {
+                "x": 1,
+                "y": 0,
+                "z": 0
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+            },
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "id": "Static/MP_Aftermath_Terrain"
+        },
+        {
+            "name": "MP_Aftermath_Assets",
+            "type": "MP_Aftermath_Assets",
+            "right": {
+                "x": 1,
+                "y": 0,
+                "z": 0
+            },
+            "up": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "front": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+            },
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "id": "Static/MP_Aftermath_Assets"
+        }
+    ]
+}
