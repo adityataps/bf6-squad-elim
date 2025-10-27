@@ -17,13 +17,13 @@ const VERSION = [0, 0, 0];
 
 // Logistics
 const MINIMUM_PLAYERS_TO_START = 1;
-const INITIAL_SQUAD_REVIVES = 4;
+const INITIAL_TEAM_REVIVES = 4;
 const ROUNDS_TO_WIN = 2; // the first team to 2 rounds won will win the game
 const MAX_ROUNDS = 7; // pigeonhole principle: if no team has 2 rounds won, all teams lose
 const ROUND_BASE_TIMER_SECS = 60 * 10;
 const SUDDEN_DEATH_TIMER_SECS = 60 * 2;
 
-const SquadIdMapping: { [key: number]: string } = {
+const TeamIdMapping: { [key: number]: string } = {
   0: "Alfa",
   1: "Bravo",
   2: "Charlie",
@@ -33,88 +33,88 @@ const SquadIdMapping: { [key: number]: string } = {
 };
 
 // Enums
-type SquadMap = Map<number, Squad>;
+type TeamMap = Map<number, Team>;
 type PlayerMap = Map<number, Player>;
 
 // Classes
-class Squad {
-  squadId: number;
-  squadName: string;
-  squadScore: number;
-  squadRevivesLeft: number;
-  squadPlayersAlive: number;
-  squadEliminated: boolean;
+class Team {
+  teamId: number;
+  teamName: string;
+  teamScore: number;
+  teamRevivesLeft: number;
+  teamPlayersAlive: number;
+  teamEliminated: boolean;
 
-  constructor(squadId: number) {
-    this.squadId = squadId;
-    this.squadName = SquadIdMapping[squadId] ?? "Unknown";
-    this.squadScore = 0;
-    this.squadRevivesLeft = INITIAL_SQUAD_REVIVES;
-    this.squadPlayersAlive = 4;
-    this.squadEliminated = false;
+  constructor(teamId: number) {
+    this.teamId = teamId;
+    this.teamName = TeamIdMapping[teamId] ?? "Unknown";
+    this.teamScore = 0;
+    this.teamRevivesLeft = INITIAL_TEAM_REVIVES;
+    this.teamPlayersAlive = 4;
+    this.teamEliminated = false;
   }
 
   gameReset() {
-    this.squadScore = 0;
-    this.squadRevivesLeft = INITIAL_SQUAD_REVIVES;
-    this.squadPlayersAlive = 4;
-    this.squadEliminated = false;
+    this.teamScore = 0;
+    this.teamRevivesLeft = INITIAL_TEAM_REVIVES;
+    this.teamPlayersAlive = 4;
+    this.teamEliminated = false;
   }
 
   roundReset() {
-    this.squadRevivesLeft = INITIAL_SQUAD_REVIVES;
-    this.squadPlayersAlive = 4;
-    this.squadEliminated = false;
+    this.teamRevivesLeft = INITIAL_TEAM_REVIVES;
+    this.teamPlayersAlive = 4;
+    this.teamEliminated = false;
   }
 
-  handleSquadElimination() {
-    this.squadEliminated = true;
+  handleTeamElimination() {
+    this.teamEliminated = true;
   }
 
-  handleSquadRevive() {
-    this.squadRevivesLeft--;
-    this.squadPlayersAlive++;
+  handleTeamRevive() {
+    this.teamRevivesLeft--;
+    this.teamPlayersAlive++;
   }
 
-  handleSquadDeath() {
-    this.squadPlayersAlive--;
-    if (this.squadPlayersAlive == 0) {
-      this.handleSquadElimination();
+  handleTeamDeath() {
+    this.teamPlayersAlive--;
+    if (this.teamPlayersAlive == 0) {
+      this.handleTeamElimination();
     }
   }
 
-  hasSquadRevivesLeft() {
-    return this.squadRevivesLeft > 0;
+  hasTeamRevivesLeft() {
+    return this.teamRevivesLeft > 0;
   }
 
-  hasSquadPlayersAlive() {
-    return this.squadPlayersAlive > 0;
+  hasTeamPlayersAlive() {
+    return this.teamPlayersAlive > 0;
   }
 
-  isSquadEliminated() {
-    return this.squadEliminated;
+  isTeamEliminated() {
+    return this.teamEliminated;
   }
 
   addRoundWin() {
-    this.squadScore++;
+    this.teamScore++;
   }
 
   hasWonGame() {
-    return this.squadScore >= ROUNDS_TO_WIN;
+    return this.teamScore >= ROUNDS_TO_WIN;
   }
 }
 
 class Player {
   playerId: number;
   playerName: string;
-  playerSquad: number;
+  playerTeam: number;
   playerAlive: boolean;
   playerPinged: boolean;
 
   constructor(playerId: number) {
     this.playerId = playerId;
     this.playerName = "";
-    this.playerSquad = -1;
+    this.playerTeam = -1;
     this.playerAlive = true;
     this.playerPinged = false;
   }
@@ -131,13 +131,13 @@ class Player {
     return this.playerAlive;
   }
 
-  canBeRevived(squads: Map<number, Squad>) {
+  canBeRevived(teams: Map<number, Team>) {
     if (this.playerAlive) return false;
 
-    const playerSquad = squads.get(this.playerSquad);
-    if (!playerSquad) return false;
+    const playerTeam = teams.get(this.playerTeam);
+    if (!playerTeam) return false;
 
-    return playerSquad.hasSquadRevivesLeft() && playerSquad.hasSquadPlayersAlive();
+    return playerTeam.hasTeamRevivesLeft() && playerTeam.hasTeamPlayersAlive();
   }
 
   setPlayerPinged() {
@@ -151,7 +151,7 @@ class GameState {
   gameEnded: boolean;
   gameRound: number;
   gameTimerSecs: number;
-  squads: SquadMap = new Map();
+  teams: TeamMap = new Map();
   players: PlayerMap = new Map();
 
   constructor() {
@@ -159,7 +159,7 @@ class GameState {
     this.gameEnded = false;
     this.gameRound = -1;
     this.gameTimerSecs = 0;
-    this.squads = new Map();
+    this.teams = new Map();
     this.players = new Map();
   }
 
@@ -175,12 +175,12 @@ class GameState {
     this.gameRound = -1;
   }
 
-  getAliveSquads(): Squad[] {
-    return Array.from(this.squads.values()).filter(s => !s.isSquadEliminated());
+  getAliveTeams(): Team[] {
+    return Array.from(this.teams.values()).filter(s => !s.isTeamEliminated());
   }
 
-  getSquadById(squadId: number): Squad | undefined {
-    return this.squads.get(squadId);
+  getTeamById(teamId: number): Team | undefined {
+    return this.teams.get(teamId);
   }
 
   getAllPlayers(): Player[] {
@@ -195,7 +195,7 @@ class RoundState {
   roundEnded: boolean;
   roundNumber: number;
   roundTimerSecs: number;
-  roundSquads: Map<number, Squad> = new Map();
+  roundTeams: Map<number, Team> = new Map();
   roundPlayers: Map<number, Player> = new Map();
   isSuddenDeath: boolean;
 
@@ -204,7 +204,7 @@ class RoundState {
     this.roundEnded = false;
     this.roundNumber = -1;
     this.roundTimerSecs = 0;
-    this.roundSquads = new Map();
+    this.roundTeams = new Map();
     this.roundPlayers = new Map();
     this.isSuddenDeath = false;
   }
@@ -225,6 +225,3 @@ class RoundState {
     this.roundEnded = true;
   }
 }
-
-let roundTimerSecs = 0;
-let isSuddenDeath = false;
