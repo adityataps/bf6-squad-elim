@@ -17,9 +17,10 @@ const VERSION = [0, 0, 0];
 
 // Logistics
 const MINIMUM_PLAYERS_TO_START = 1;
+const NUMBER_OF_TEAMS = 6;
 const INITIAL_TEAM_REVIVES = 4;
 const ROUNDS_TO_WIN = 2; // the first team to 2 rounds won will win the game
-const MAX_ROUNDS = 7; // pigeonhole principle: if no team has 2 rounds won, all teams lose
+const MAX_NUMBER_OF_ROUNDS = 7; // pigeonhole principle: if no team has 2 rounds won, all teams lose
 const ROUND_TIMER_SECS = 60 * 10;
 const SUDDEN_DEATH_TIMER_SECS = 60 * 2;
 
@@ -78,7 +79,7 @@ class Team {
 
   handleTeamDeath() {
     this.teamPlayersAlive--;
-    if (this.teamPlayersAlive == 0) {
+    if (this.teamPlayersAlive === 0) {
       this.handleTeamElimination();
     }
   }
@@ -192,7 +193,9 @@ class GameState {
   }
 
   endRound() {
-    if (!this.roundStarted) console.debug("Tried to end round when round was not started");
+    if (!this.roundStarted) {
+      console.debug("Tried to end round when round was not started");
+    }
     this.roundStarted = false;
     this.roundEnded = true;
   }
@@ -234,12 +237,55 @@ export function OnPlayerDied(
 // Game events
 export async function OnGameModeStarted() {
   game.startGame();
+  console.log("Game started");
 
   let roundNumber = 0;
-  while (roundNumber < MAX_ROUNDS) {
+  while (
+    [...game.teams.values()].every(team => !team.hasWonGame()) &&
+    roundNumber < MAX_NUMBER_OF_ROUNDS
+  ) {
+    console.log(`Starting round ${roundNumber + 1}`);
+
     game.startNewRound(roundNumber);
+    let roundTimerSecs = 0;
+    while (
+      game.getAliveTeams().length > 1 &&
+      roundTimerSecs < ROUND_TIMER_SECS + SUDDEN_DEATH_TIMER_SECS
+    ) {
+      await mod.Wait(1);
+      if (roundTimerSecs === ROUND_TIMER_SECS) {
+        console.log(`Round ${roundNumber + 1} entering sudden death...`);
+        game.roundEnterSuddenDeath();
+      }
+
+      roundTimerSecs++;
+    }
+
+    if (game.getAliveTeams().length === 1) {
+      console.log(`Round ${roundNumber + 1} won by ${game.getAliveTeams()[0]!.teamName}`);
+      const winningTeam = game.getAliveTeams()[0]!;
+      winningTeam.addRoundWin();
+    } else {
+      console.log(
+        `Round ${roundNumber + 1} ended; teams alive: ${game
+          .getAliveTeams()
+          .map(team => team.teamName)
+          .join(", ")}`
+      );
+    }
+
+    game.endRound();
     roundNumber++;
   }
+
+  const winningTeamList = [...game.teams.values()].filter(team => team.hasWonGame());
+  if (winningTeamList.length === 1) {
+    console.log(`Game won by team ${winningTeamList[0]!.teamName} in ${roundNumber + 1} rounds!`);
+  } else {
+    console.log(`Game lost; no team won in ${MAX_NUMBER_OF_ROUNDS} rounds`);
+  }
+
+  game.endGame();
 }
 
 export function OnGameModeEnding(): void {}
