@@ -20,7 +20,7 @@ const MINIMUM_PLAYERS_TO_START = 1;
 const INITIAL_TEAM_REVIVES = 4;
 const ROUNDS_TO_WIN = 2; // the first team to 2 rounds won will win the game
 const MAX_ROUNDS = 7; // pigeonhole principle: if no team has 2 rounds won, all teams lose
-const ROUND_BASE_TIMER_SECS = 60 * 10;
+const ROUND_TIMER_SECS = 60 * 10;
 const SUDDEN_DEATH_TIMER_SECS = 60 * 2;
 
 const TeamIdMapping: { [key: number]: string } = {
@@ -140,8 +140,8 @@ class Player {
     return playerTeam.hasTeamRevivesLeft() && playerTeam.hasTeamPlayersAlive();
   }
 
-  setPlayerPinged() {
-    this.playerPinged = true;
+  setPlayerPinged(isPinged: boolean) {
+    this.playerPinged = isPinged;
   }
 }
 
@@ -150,29 +150,56 @@ class GameState {
   gameStarted: boolean;
   gameEnded: boolean;
   gameRound: number;
-  gameTimerSecs: number;
   teams: TeamMap = new Map();
   players: PlayerMap = new Map();
+  roundStarted: boolean;
+  roundEnded: boolean;
+  roundTimerSecs: number;
+  roundInSuddenDeath: boolean;
 
   constructor() {
     this.gameStarted = false;
     this.gameEnded = false;
     this.gameRound = -1;
-    this.gameTimerSecs = 0;
     this.teams = new Map();
     this.players = new Map();
+    this.roundStarted = false;
+    this.roundEnded = false;
+    this.roundTimerSecs = 0;
+    this.roundInSuddenDeath = false;
   }
 
   startGame() {
     this.gameStarted = true;
     this.gameEnded = false;
-    this.gameRound = 0;
   }
 
   endGame() {
     this.gameStarted = false;
     this.gameEnded = true;
     this.gameRound = -1;
+  }
+
+  startNewRound(roundNumber: number) {
+    this.gameRound = roundNumber;
+    this.roundStarted = true;
+    this.roundEnded = false;
+    this.roundTimerSecs = 0;
+    this.roundInSuddenDeath = false;
+
+    this.teams.forEach(team => team.roundReset());
+    this.players.forEach(player => player.setPlayerPinged(false));
+  }
+
+  endRound() {
+    if (!this.roundStarted) console.debug("Tried to end round when round was not started");
+    this.roundStarted = false;
+    this.roundEnded = true;
+  }
+
+  roundEnterSuddenDeath() {
+    this.roundInSuddenDeath = true;
+    this.players.forEach(player => player.setPlayerPinged(true));
   }
 
   getAliveTeams(): Team[] {
@@ -188,40 +215,33 @@ class GameState {
   }
 }
 
-// Round state
+const game = new GameState();
 
-class RoundState {
-  roundStarted: boolean;
-  roundEnded: boolean;
-  roundNumber: number;
-  roundTimerSecs: number;
-  roundTeams: Map<number, Team> = new Map();
-  roundPlayers: Map<number, Player> = new Map();
-  isSuddenDeath: boolean;
+// Player events
+export function OnPlayerJoinGame(eventPlayer: mod.Player): void {}
 
-  constructor() {
-    this.roundStarted = false;
-    this.roundEnded = false;
-    this.roundNumber = -1;
-    this.roundTimerSecs = 0;
-    this.roundTeams = new Map();
-    this.roundPlayers = new Map();
-    this.isSuddenDeath = false;
-  }
+export function OnPlayerLeaveGame(eventNumber: number): void {}
 
-  startNewRound(roundNumber: number) {
-    if (roundNumber < 0 || roundNumber > MAX_ROUNDS)
-      throw new Error(`Invalid round number: ${roundNumber}`);
+export function OnPlayerDeployed(eventPlayer: mod.Player): void {}
 
-    this.roundNumber = roundNumber;
-    this.roundStarted = true;
-    this.roundEnded = false;
-    this.roundTimerSecs = 0;
-    this.isSuddenDeath = false;
-  }
+export function OnPlayerDied(
+  eventPlayer: mod.Player,
+  eventOtherPlayer: mod.Player,
+  eventDeathType: mod.DeathType,
+  eventWeaponUnlock: mod.WeaponUnlock
+): void {}
 
-  endRound() {
-    this.roundStarted = false;
-    this.roundEnded = true;
+// Game events
+export async function OnGameModeStarted() {
+  game.startGame();
+
+  let roundNumber = 0;
+  while (roundNumber < MAX_ROUNDS) {
+    game.startNewRound(roundNumber);
+    roundNumber++;
   }
 }
+
+export function OnGameModeEnding(): void {}
+
+export function OngoingGlobal(): void {}
